@@ -1,0 +1,31 @@
+.message-container {
+    display: flex;
+    margin: 5px 0;
+  }
+  
+  .my-message-container {
+    justify-content: flex-start;
+  }
+  
+  .received-message-container {
+    justify-content: flex-end;
+  }
+  
+  .message {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 60%;
+  }
+  
+  .my-message {
+    color: red;
+    background-color: #f1f1f1;
+    align-self: flex-start; /* Align to left */
+  }
+  
+  .received-message {
+    color: green;
+    background-color: #d1e7ff;
+    align-self: flex-end; /* Align to right */
+  }
+  
