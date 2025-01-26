@@ -26,7 +26,9 @@ export class LoginComponent {
       this.service.login(this.loginForm.value).subscribe(
         {
           next: (result) => {
-            localStorage.setItem('authToken', result.response);
+            localStorage.setItem('authToken', result.response.token);
+            const userInfo = JSON.stringify(result.response.userData);
+            localStorage.setItem('logedinInfo', userInfo);
             this.router.navigate(['']);
             alert(result.message);
           },

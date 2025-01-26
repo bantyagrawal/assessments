@@ -34,6 +34,16 @@ const userSchema = new Schema(
       type: Number,
       default: null,
     },
+    role: {
+      type: String,
+      enum: ['Manager', 'Team leader', 'Employee'],
+      default: 'Employee',
+    },
+    teamLead: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
   },
   { timestamps: true },
 );

@@ -1,80 +1,3 @@
-<!-- <mat-card>
-    <mat-card-title>
-        <span>Task List</span>
-        <button mat-button color="primary" (click)="openDialog()" style="margin-left: 90%; margin-bottom: 5px;">Add Task</button>
-    </mat-card-title>
-    <mat-card-content>
-        <mat-table [dataSource]="tasks" class="mat-elevation-z8" *ngIf="tasks.data.length">
-            <ng-container matColumnDef="title">
-                <th mat-header-cell *matHeaderCellDef> Title </th>
-                <td mat-cell *matCellDef="let task"> {{task.title}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="description">
-                <th mat-header-cell *matHeaderCellDef> Description </th>
-                <td mat-cell *matCellDef="let task"> {{task.description}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="user">
-                <th mat-header-cell *matHeaderCellDef> Users </th>
-                <td mat-cell *matCellDef="let task">
-                    <mat-form-field>
-                        <mat-label>Users</mat-label>
-                        <mat-select [(ngModel)]="task.user_id" multiple>
-                            <mat-option *ngFor="let user of users" [value]="user._id">{{ user.name }}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Status </th>
-                <td mat-cell *matCellDef="let task">
-                    <mat-form-field>
-                        <mat-label>Status</mat-label>
-                        <mat-select [(value)]="task.status">
-                            <mat-option value="To Do">To Do</mat-option>
-                            <mat-option value="In Progress">In Progress</mat-option>
-                            <mat-option value="Completed">Completed</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="priority">
-                <th mat-header-cell *matHeaderCellDef> Priority </th>
-                <td mat-cell *matCellDef="let task">
-                    <mat-form-field>
-                        <mat-label>Priority</mat-label>
-                        <mat-select [(value)]="task.priority">
-                            <mat-option value="Low">Low</mat-option>
-                            <mat-option value="Medium">Medium</mat-option>
-                            <mat-option value="High">High</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="due_date">
-                <th mat-header-cell *matHeaderCellDef> Due Date </th>
-                <td mat-cell *matCellDef="let task"> {{task.due_date | date}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let task">
-                    <button mat-button color="warn" (click)="deleteTask(task)">Delete</button>
-                    <button mat-button color="warn" (click)="updateTask(task)">update</button>
-                </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </mat-table>
-        <p *ngIf="!tasks.data.length">No tasks available.</p>
-    </mat-card-content>
-</mat-card> -->
-
-
 <mat-card>
     <mat-card-title>
       <span>Task List</span>
@@ -146,7 +69,7 @@
           <td mat-cell *matCellDef="let task"> {{task.due_date | date}} </td>
         </ng-container>
   
-        <ng-container matColumnDef="actions">
+        <ng-container matColumnDef="actions" *ngIf="userInfo.role === 'Manager'">
           <th mat-header-cell *matHeaderCellDef> Actions </th>
           <td mat-cell *matCellDef="let task">
             <button mat-button color="warn" (click)="deleteTask(task)">Delete</button>
@@ -161,3 +84,45 @@
     </mat-card-content>
   </mat-card>
   
+
+
+
+
+
+
+
+<ng-container *ngIf="userInfo.role != 'Employee'">
+  <mat-card>
+    <mat-card-title>
+      <span>User List</span>
+    </mat-card-title>
+    <mat-card-content>
+      <mat-table [dataSource]="userList" class="mat-elevation-z8" *ngIf="userList.data.length">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email </th>
+          <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+        </ng-container>
+        
+        
+        <ng-container matColumnDef="mobile">
+          <th mat-header-cell *matHeaderCellDef> Mobile </th>
+          <td mat-cell *matCellDef="let user"> {{user.mobile}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef> Role </th>
+          <td mat-cell *matCellDef="let user"> {{user.role}} </td>
+        </ng-container>
+        
+        <tr mat-header-row *matHeaderRowDef="displayedColumnForUser"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnForUser;"></tr>
+      </mat-table>
+      <p *ngIf="!userList.data.length">No users available.</p>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

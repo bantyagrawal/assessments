@@ -11,8 +11,10 @@ import { ServicesService } from '../service/services.service';
 export class SignupComponent {
 
   signupForm: FormGroup;
+  users: any[] = [];
+  filterUser: any[] = [];
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private router: Router,
     private service: ServicesService
   ) {
@@ -21,18 +23,31 @@ export class SignupComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       mobile: ['', [Validators.required, Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$')]],
-      address: ['', Validators.required]
+      address: ['', Validators.required],
+      role: [''],
+      teamLead: [''],
     });
+    this.getUsers();
   }
 
+  getUsers() {
+    this.service.getUserList().subscribe({
+      next: (res) => {
+        this.users = res.response;
+      },
+      error: (err) => {
+        alert(err.error);
+      }
+    })
+  }
   onSubmit() {
     if (this.signupForm.valid) {
       this.service.signup(this.signupForm.value).subscribe({
         next: (res) => {
-          this.service.sendOtp({email: res.response.email}).subscribe({
+          this.service.sendOtp({ email: res.response.email }).subscribe({
             next: (res) => {
-            this.router.navigateByUrl('otp');
-             alert(res.message);
+              this.router.navigateByUrl('otp');
+              alert(res.message);
             }
           })
         },
@@ -41,5 +56,20 @@ export class SignupComponent {
         }
       })
     }
+  }
+
+  filterUsers() {
+    const filerValue = this.signupForm.value.role;
+    this.filterUser = this.users.filter(user => { 
+      if (filerValue == 'Employee' ) {
+        if (user.role == "Team leader"){
+          return user;
+        }
+      } else if (filerValue == 'Team leader') {
+        if (user.role == "Manager"){
+          return user;
+        }
+      }
+    })
   }
 }

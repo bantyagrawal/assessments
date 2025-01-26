@@ -5,7 +5,8 @@ const {
   changePasswordService,
   sendOtpService,
   verifyUserService,
-  userListService
+  userListService,
+  userByloginService
 } = require('../Service/userService');
 
 const signup = async (req, res) => {
@@ -69,11 +70,22 @@ const userList = async (req, res) => {
   }
 }
 
+const userListAsPerLogin = async (req, res) => {
+  try {
+    console.log(req.user);
+    const result = await userByloginService(req.user);
+    
+    res.status(result.status).send(result);
+  } catch (err) {
+    res.status(err.status).send(err.message);
+  }
+}
 module.exports = {
   signup,
   login,
   changePassword,
   sendOtp,
   verifyUser,
-  userList
+  userList,
+  userListAsPerLogin
 };

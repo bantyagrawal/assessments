@@ -58,7 +58,7 @@ const signupService = async (req) => {
   
       const token = await generateToken(userData, process.env.USER_SECRATE);
   
-      return await sendResponse('User has been loged in', token);
+      return await sendResponse('User has been loged in', { userData,token });
     } catch (error) {
       throw await generateError(error.message, error.status);
     }
@@ -139,11 +139,33 @@ const signupService = async (req) => {
       throw await generateError(err.message, err.status);
     }
   }
+
+  const userByloginService = async (req) => {
+    try {
+      const { role, _id } = req;
+      let users = [];
+      if ( role == "Manager") {
+        users = await userModel.find({ role: { $in: ["Team leader", "Employee"] }, isDeleted: false});
+      } else if (role == "Team leader")
+      {
+        users = await userModel.find({ teamLead: _id, isDeleted: false});
+      } else {
+        users = [];
+      }
+      console.log(users);
+      
+      return await sendResponse('User List', users);
+    } catch (err) {
+      throw await generateError(err.message, err.status);
+    }
+  }
+
   module.exports = {
     signupService,
     loginService,
     changePasswordService,
     sendOtpService,
     verifyUserService,
-    userListService
+    userListService,
+    userByloginService
   };

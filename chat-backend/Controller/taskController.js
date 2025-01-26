@@ -2,7 +2,7 @@ const { createTaskService, deleteTaskService, getTaskService, getUserTaskService
 
 const createTask = async (req, res) => {
     try {
-        const result = await createTaskService(req.body);
+        const result = await createTaskService(req);
         res.status(result.status).send(result);
     } catch (err) {
         res.status(err.status).send(err.message);
@@ -11,7 +11,7 @@ const createTask = async (req, res) => {
 
 const deleteTask = async (req, res) => {
     try {
-        const result = await deleteTaskService(req.body);
+        const result = await deleteTaskService(req);
         res.status(result.status).send(result);
     } catch (err) {
         res.status(err.status).send(err.message);
@@ -19,8 +19,8 @@ const deleteTask = async (req, res) => {
 };
 
 const getTaskList = async (req, res) => {
-    try {
-        const result = await getTaskService();
+    try {        
+        const result = await getTaskService(req);
         res.status(result.status).send(result);
     } catch (err) {
         res.status(err.status).send(err.message);

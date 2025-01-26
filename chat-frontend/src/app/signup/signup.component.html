@@ -42,6 +42,23 @@
                 </mat-error>
             </mat-form-field>
 
+            <mat-form-field class="full-width">
+                <mat-label>Role</mat-label>
+                <mat-select (selectionChange)="filterUsers()" formControlName="role">
+                    <mat-option value="Manager">Manager</mat-option>
+                    <mat-option value="Team leader">Team leader</mat-option>
+                    <mat-option value="Employee">Employee</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <ng-container *ngIf="signupForm.value.role != 'Manager'">
+                <mat-form-field class="full-width">
+                    <mat-label>Team Lead</mat-label>
+                    <mat-select formControlName="teamLead">
+                        <mat-option *ngFor="let user of filterUser" [value]="user._id">{{ user.name }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </ng-container>
             <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid">Sign Up</button>
         </form><br>
         <p> Already have an account? <a routerLink="/login">Log in here</a> </p>

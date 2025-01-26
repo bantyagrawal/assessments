@@ -1,11 +1,18 @@
 const { taskModel } = require("../Schema/taskSchema");
+const { userModel } = require("../Schema/userSchema");
 const { findOne, saveData, deleteID, findByQuery, findByIdAndUpdate } = require("../Dao/dao");
 const { statusCode } = require('../Constant/constant');
 const { generateError, sendResponse } = require("../Utils/utils");
 
 const createTaskService = async (req) => {
     try {
-        const { title } = req;
+        const { role } = req.user;
+        const { title } = req.body;
+        if ( role !== "Manager") {
+            const err = new Error("User does not have enough permissions to create task");
+            err.status = statusCode.Unauthorized;
+            throw err; 
+        }
         if (!title) {
             const err = new Error(error.message);
             err.status = statusCode.Unauthorized;
@@ -18,7 +25,7 @@ const createTaskService = async (req) => {
             error.status = statusCode['Already Reported'];
             throw error;
         }
-        const taskDate = await saveData(taskModel, req);
+        const taskDate = await saveData(taskModel, req.body);
         return await sendResponse('Task has been created', taskDate);
     } catch (error) {
         throw await generateError(error.message, statusCode['Bad Request']);
@@ -27,7 +34,11 @@ const createTaskService = async (req) => {
 
 const deleteTaskService = async (req) => {
     try {
-        const { _id } = req;
+        const { role } = req.user;
+        const { _id } = req.boy;
+        if ( role !== "Manager") {
+            throw await generateError('User does not have enough permissions to create task', statusCode['Unauthorized']);
+        }
         const deletedTask = await deleteID(taskModel, _id);
         if (!deletedTask) {
             throw await generateError('Task not found', statusCode['Not Found']);
@@ -38,9 +49,23 @@ const deleteTaskService = async (req) => {
     }
 };
 
-const getTaskService = async () => {
+const getTaskService = async (req) => {
     try {
-        const taskList = await taskModel.find({});
+        const user_id  = req.user._id
+        const { role } = req.user;
+        let taskList = [];
+        console.log(user_id,role);
+        
+        if ( role === 'Employee') {
+            taskList = await taskModel.find({user_id});
+        } else if ( role === 'Team leader' ) {
+            const userList = await userModel.find({isDeleted: false, teamLead: user_id});
+            userIds = userList.map(user => user._id);
+            userIds.push(user_id);
+            taskList = await taskModel.find({ user_id: { $in: userIds } });
+        } else {
+            taskList = await taskModel.find({});
+        }
         return await sendResponse('Task list', taskList);
     } catch (error) {
         throw await generateError(error.message, statusCode['Bad Request']);

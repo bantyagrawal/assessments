@@ -12,16 +12,31 @@ import { CustomAlertDialogComponent } from '../custom-alert-dialog/custom-alert-
 })
 export class HomeComponent {
   tasks = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = ['title', 'description', 'user', 'status', 'priority', 'due_date', 'actions'];
+  userList = new MatTableDataSource<any>([]);
+  displayedColumns: string[] = ['title', 'description', 'user', 'status', 'priority', 'due_date'];
+  displayedColumnForUser: string[] = ['name', 'email', 'mobile', 'role'];
   users: any[] = [];
+  userInfo: any = {};
   filerValue: string = "";
+
   constructor(
     private service: ServicesService,
     private socket: SocketService,
     public dialog: MatDialog
   ) {
+    const userInfoString = localStorage.getItem('logedinInfo');
+  
+  if (userInfoString) {
+    this.userInfo = JSON.parse(userInfoString);
+        if (this.userInfo.role === 'Manager') {
+      console.log(this.userInfo.role);
+      this.displayedColumns.push('actions');
+    }
     this.getUsers();
+    this.getUsersByLogin();
   }
+}
+  
   ngOnInit() {
     this.loadTasks();
     this.socket.createConnection();
@@ -35,10 +50,7 @@ export class HomeComponent {
     this.service.getTaskList().subscribe({
       next: (res) => {
         this.tasks.data = res.response;
-        console.log('filter value',this.filerValue);
-        
         this.tasks.data = this.tasks.data.filter(task => task.priority.includes(this.filerValue));
-        console.log(this.tasks.data);
       },
       error: (err) => {
         alert(err.error);
@@ -63,15 +75,22 @@ export class HomeComponent {
     this.service.getUserList().subscribe({
       next: (res) => {
         this.users = res.response;
-        console.log(this.users);
-
       },
       error: (err) => {
         alert(err.error);
       }
     })
   }
-
+  getUsersByLogin() {
+    this.service.getUserListByLogin().subscribe({
+      next: (res) => {
+        this.userList.data = res.response;
+      },
+      error: (err) => {
+        alert(err.error);
+      }
+    })
+  }
   openDialog() {
     let dialogRef = this.dialog.open(AddTaskComponent, {
       width: '300px',

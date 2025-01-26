@@ -6,6 +6,8 @@ const userRegistrationSchema = Joi.object({
   mobile: Joi.string().required(),
   address: Joi.string().required(),
   password: Joi.string().required(),
+  role: Joi.string(),
+  teamLead: Joi.optional()
 });
 
 const userLoginSchema = Joi.object({

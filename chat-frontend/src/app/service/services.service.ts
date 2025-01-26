@@ -51,6 +51,11 @@ export class ServicesService {
     return this.http.get(`${this.baseUrl}/userlist`, { headers });
   }
 
+  getUserListByLogin(): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.get(`${this.baseUrl}/userlistbylogin`, { headers });
+  }
+
   addTask(data: any): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.post(`${this.baseUrl}/createtask`, data, { headers });
