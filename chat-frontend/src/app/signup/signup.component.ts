@@ -25,7 +25,7 @@ export class SignupComponent {
       mobile: ['', [Validators.required, Validators.pattern('^((\\+91-?)|0)?[0-9]{10}$')]],
       address: ['', Validators.required],
       role: [''],
-      teamLead: [''],
+      teamLead: [null],
     });
     this.getUsers();
   }
